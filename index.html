@@ -4,13 +4,19 @@
   <title>Hotel Booking</title>
   <style>
     body { font-family: Arial; }
-    label { display: block; margin-top: 10px; }
-    #msg { color: red; }
+    label { display:block; margin-top:10px; }
+    table { border-collapse: collapse; margin-top:20px; width:100%; }
+    th, td { border:1px solid #000; padding:6px; text-align:center; }
+    th { background:#f2f2f2; }
+    #msg { color:red; font-weight:bold; }
   </style>
 </head>
 <body>
 
 <h2>Hotel Booking</h2>
+
+<label>Name:</label>
+<input type="text" id="name">
 
 <label>Check-in Date:</label>
 <input type="date" id="checkin">
@@ -20,71 +26,100 @@
 
 <label>No of Rooms:</label>
 <input type="number" id="rooms" min="1">
-<p id="msg"></p>
 
 <label>Total Amount:</label>
 <input type="text" id="amount" readonly>
 
+<p id="msg"></p>
+
+<button onclick="bookNow()">Book Now</button>
+
+<hr>
+
+<h3>Booking Details</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Rooms</th>
+      <th>Amount (₹)</th>
+    </tr>
+  </thead>
+  <tbody id="details"></tbody>
+</table>
+
+<h3>Daily Summary</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Total Rooms</th>
+      <th>Total Amount (₹)</th>
+    </tr>
+  </thead>
+  <tbody id="summary"></tbody>
+</table>
+
 <script>
-let MAX_ROOMS = 30;
-let PRICE_PER_ROOM = 2000;
+const PRICE = 2000;
+const MAX_ROOMS = 30;
 
-const checkin = document.getElementById("checkin");
-const checkout = document.getElementById("checkout");
-const rooms = document.getElementById("rooms");
-const msg = document.getElementById("msg");
-const amount = document.getElementById("amount");
+let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+render();
 
-/* ---- PAST DATE NOT ALLOWED ---- */
-checkin.addEventListener("change", function () {
-  if (!this.value) return;
-
+/* ---- PAST DATE BLOCK ---- */
+checkin.addEventListener("change", () => {
   let today = new Date();
   today.setHours(0,0,0,0);
-  let selected = new Date(this.value);
-
-  if (selected < today) {
+  if (new Date(checkin.value) < today) {
     alert("Past date not allowed");
-    this.value = "";
+    checkin.value = "";
   }
 });
 
-/* ---- ROOMS LIMIT = 30 ---- */
-rooms.addEventListener("input", function () {
-  if (this.value > MAX_ROOMS) {
-    msg.innerText = "Rooms Filled! Only 30 bookings allowed";
-    this.value = MAX_ROOMS;
-  } else if (this.value == MAX_ROOMS) {
-    msg.innerText = "Rooms Filled!";
-  } else {
-    msg.innerText = "";
-  }
-  calculateAmount();
-});
+/* ---- AMOUNT CALC ---- */
+rooms.addEventListener("input", calc);
+checkout.addEventListener("change", calc);
 
-/* ---- COST CALCULATION ---- */
-checkout.addEventListener("change", calculateAmount);
-
-function calculateAmount() {
-  if (!checkin.value || !checkout.value || !rooms.value) {
-    amount.value = "";
-    return;
-  }
-
-  let inDate = new Date(checkin.value);
-  let outDate = new Date(checkout.value);
-  let days = (outDate - inDate) / (1000 * 60 * 60 * 24);
-
+function calc() {
+  if (!checkin.value || !checkout.value || !rooms.value) return;
+  let days = (new Date(checkout.value) - new Date(checkin.value)) / (1000*60*60*24);
   if (days <= 0) {
-    alert("Check-out must be after check-in");
-    checkout.value = "";
-    amount.value = "";
+    alert("Invalid checkout");
+    checkout.value="";
+    return;
+  }
+  amount.value = "₹ " + (days * rooms.value * PRICE);
+}
+
+/* ---- BOOK NOW ---- */
+function bookNow() {
+  if (!name.value || !checkin.value || !rooms.value || !amount.value) {
+    alert("Fill all details");
     return;
   }
 
-  amount.value = "₹ " + (days * rooms.value * PRICE_PER_ROOM);
-}
-</script>
+  let todayBookings = bookings.filter(b => b.date === checkin.value);
+  let bookedRooms = todayBookings.reduce((s,b)=>s+b.rooms,0);
 
-</body>
-</html>
+  if (bookedRooms + Number(rooms.value) > MAX_ROOMS) {
+    msg.innerText = "Rooms Filled for this date!";
+    return;
+  }
+
+  bookings.push({
+    name: name.value,
+    date: checkin.value,
+    rooms: Number(rooms.value),
+    amount: Number(amount.value.replace("₹",""))
+  });
+
+  localStorage.setItem("bookings", JSON.stringify(bookings));
+  msg.innerText = "Booking Successful!";
+  render();
+}
+
+/* ---- DISPLAY ---- */
+function render() {
+  let
