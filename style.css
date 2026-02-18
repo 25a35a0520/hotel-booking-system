@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-  background: transparent;
+  background: skyblue;
   width: 80%;
   margin: 30px auto;
   padding: 20px;
@@ -55,4 +55,5 @@ th, td {
 th {
   background: #f2f2f2;
 }
+
 
