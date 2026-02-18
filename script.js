@@ -1,75 +1,106 @@
-<script>
-const MAX_ROOMS = 30;
-const PRICE = 2000;
+// ===== CONFIG =====
+const PRICE_PER_ROOM = 2000;
+const MAX_ROOMS_PER_DAY = 30;
 
-let totalBookedRooms = 0;
-
+// ===== GET ELEMENTS =====
+const nameInput = document.getElementById("name");
 const checkin = document.getElementById("checkin");
 const checkout = document.getElementById("checkout");
-const rooms = document.getElementById("rooms");
-const amount = document.getElementById("amount");
-const bookedCount = document.getElementById("bookedCount");
+const roomsInput = document.getElementById("rooms");
+const amountInput = document.getElementById("amount");
+const bookBtn = document.getElementById("bookBtn");
 const msg = document.getElementById("msg");
+const detailsTable = document.getElementById("details");
+const summaryTable = document.getElementById("summary");
 
-/* ---- PAST DATE NOT ALLOWED ---- */
-checkin.addEventListener("change", function () {
+// ===== LOAD EXISTING BOOKINGS =====
+let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+// ===== PAST DATE NOT ALLOWED =====
+checkin.addEventListener("change", () => {
+  if (!checkin.value) return;
+
   let today = new Date();
-  today.setHours(0,0,0,0);
-  let selected = new Date(this.value);
+  today.setHours(0, 0, 0, 0);
+
+  let selected = new Date(checkin.value);
 
   if (selected < today) {
     alert("Past date not allowed");
-    this.value = "";
+    checkin.value = "";
   }
 });
 
-/* ---- AMOUNT CALCULATION ---- */
-rooms.addEventListener("input", calculateAmount);
+// ===== AUTO AMOUNT CALCULATOR =====
+roomsInput.addEventListener("input", calculateAmount);
 checkout.addEventListener("change", calculateAmount);
 
 function calculateAmount() {
-  if (!checkin.value || !checkout.value || !rooms.value) {
-    amount.value = "";
+  if (!checkin.value || !checkout.value || !roomsInput.value) {
+    amountInput.value = "";
     return;
   }
 
   let inDate = new Date(checkin.value);
   let outDate = new Date(checkout.value);
+
   let days = (outDate - inDate) / (1000 * 60 * 60 * 24);
 
   if (days <= 0) {
     alert("Check-out must be after check-in");
     checkout.value = "";
-    amount.value = "";
+    amountInput.value = "";
     return;
   }
 
-  amount.value = "₹ " + (days * rooms.value * PRICE);
+  let total = days * roomsInput.value * PRICE_PER_ROOM;
+  amountInput.value = "₹ " + total;
 }
 
-/* ---- BOOK NOW BUTTON ---- */
-function bookNow() {
-  let r = Number(rooms.value);
-
-  if (!checkin.value || !checkout.value || !r) {
+// ===== BOOK NOW =====
+bookBtn.addEventListener("click", () => {
+  if (
+    !nameInput.value ||
+    !checkin.value ||
+    !checkout.value ||
+    !roomsInput.value ||
+    !amountInput.value
+  ) {
     alert("Please fill all details");
     return;
   }
 
-  if (totalBookedRooms + r > MAX_ROOMS) {
-    msg.innerText = "Rooms Filled!";
+  let bookedToday = bookings
+    .filter(b => b.date === checkin.value)
+    .reduce((sum, b) => sum + b.rooms, 0);
+
+  let requestedRooms = Number(roomsInput.value);
+
+  if (bookedToday + requestedRooms > MAX_ROOMS_PER_DAY) {
+    msg.innerText = "Rooms Filled for this date!";
     return;
   }
 
-  totalBookedRooms += r;
-  bookedCount.innerText = totalBookedRooms;
+  bookings.push({
+    name: nameInput.value,
+    date: checkin.value,
+    rooms: requestedRooms,
+    amount: Number(amountInput.value.replace("₹", "").trim())
+  });
 
+  localStorage.setItem("bookings", JSON.stringify(bookings));
   msg.innerText = "Booking Successful!";
-  rooms.value = "";
-  amount.value = "";
 
-  if (totalBookedRooms === MAX_ROOMS) {
-    msg.innerText = "Rooms Filled!";
-  }
-}
-</script>
+  renderTables();
+  clearForm();
+});
+
+// ===== RENDER TABLES =====
+function renderTables() {
+  detailsTable.innerHTML = "";
+  summaryTable.innerHTML = "";
+
+  let dailySummary = {};
+
+  bookings.forEach(b => {
+    //
