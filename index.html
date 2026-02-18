@@ -5,9 +5,10 @@
   <style>
     body { font-family: Arial; }
     label { display:block; margin-top:10px; }
+    button { margin-top:10px; }
     table { border-collapse: collapse; margin-top:20px; width:100%; }
     th, td { border:1px solid #000; padding:6px; text-align:center; }
-    th { background:#f2f2f2; }
+    th { background:#eee; }
     #msg { color:red; font-weight:bold; }
   </style>
 </head>
@@ -32,7 +33,7 @@
 
 <p id="msg"></p>
 
-<button onclick="bookNow()">Book Now</button>
+<button id="bookBtn">Book Now</button>
 
 <hr>
 
@@ -65,10 +66,21 @@
 const PRICE = 2000;
 const MAX_ROOMS = 30;
 
+const nameInput = document.getElementById("name");
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
+const rooms = document.getElementById("rooms");
+const amount = document.getElementById("amount");
+const msg = document.getElementById("msg");
+const details = document.getElementById("details");
+const summary = document.getElementById("summary");
+const bookBtn = document.getElementById("bookBtn");
+
 let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
 render();
 
-/* ---- PAST DATE BLOCK ---- */
+/* ---------- DATE VALIDATION ---------- */
 checkin.addEventListener("change", () => {
   let today = new Date();
   today.setHours(0,0,0,0);
@@ -78,38 +90,48 @@ checkin.addEventListener("change", () => {
   }
 });
 
-/* ---- AMOUNT CALC ---- */
-rooms.addEventListener("input", calc);
-checkout.addEventListener("change", calc);
+/* ---------- AUTO CALCULATOR ---------- */
+rooms.addEventListener("input", calculate);
+checkout.addEventListener("change", calculate);
 
-function calc() {
-  if (!checkin.value || !checkout.value || !rooms.value) return;
-  let days = (new Date(checkout.value) - new Date(checkin.value)) / (1000*60*60*24);
-  if (days <= 0) {
-    alert("Invalid checkout");
-    checkout.value="";
+function calculate() {
+  if (!checkin.value || !checkout.value || !rooms.value) {
+    amount.value = "";
     return;
   }
+
+  let days =
+    (new Date(checkout.value) - new Date(checkin.value)) /
+    (1000 * 60 * 60 * 24);
+
+  if (days <= 0) {
+    alert("Check-out must be after check-in");
+    checkout.value = "";
+    amount.value = "";
+    return;
+  }
+
   amount.value = "₹ " + (days * rooms.value * PRICE);
 }
 
-/* ---- BOOK NOW ---- */
-function bookNow() {
-  if (!name.value || !checkin.value || !rooms.value || !amount.value) {
+/* ---------- BOOK NOW ---------- */
+bookBtn.addEventListener("click", () => {
+  if (!nameInput.value || !checkin.value || !rooms.value || !amount.value) {
     alert("Fill all details");
     return;
   }
 
-  let todayBookings = bookings.filter(b => b.date === checkin.value);
-  let bookedRooms = todayBookings.reduce((s,b)=>s+b.rooms,0);
+  let todayRooms = bookings
+    .filter(b => b.date === checkin.value)
+    .reduce((s,b) => s + b.rooms, 0);
 
-  if (bookedRooms + Number(rooms.value) > MAX_ROOMS) {
+  if (todayRooms + Number(rooms.value) > MAX_ROOMS) {
     msg.innerText = "Rooms Filled for this date!";
     return;
   }
 
   bookings.push({
-    name: name.value,
+    name: nameInput.value,
     date: checkin.value,
     rooms: Number(rooms.value),
     amount: Number(amount.value.replace("₹",""))
@@ -118,8 +140,39 @@ function bookNow() {
   localStorage.setItem("bookings", JSON.stringify(bookings));
   msg.innerText = "Booking Successful!";
   render();
-}
+});
 
-/* ---- DISPLAY ---- */
+/* ---------- DISPLAY TABLES ---------- */
 function render() {
-  let
+  details.innerHTML = "";
+  summary.innerHTML = "";
+
+  let daily = {};
+
+  bookings.forEach(b => {
+    details.innerHTML += `
+      <tr>
+        <td>${b.name}</td>
+        <td>${b.date}</td>
+        <td>${b.rooms}</td>
+        <td>${b.amount}</td>
+      </tr>`;
+
+    if (!daily[b.date]) daily[b.date] = { rooms:0, amount:0 };
+    daily[b.date].rooms += b.rooms;
+    daily[b.date].amount += b.amount;
+  });
+
+  for (let d in daily) {
+    summary.innerHTML += `
+      <tr>
+        <td>${d}</td>
+        <td>${daily[d].rooms}</td>
+        <td>${daily[d].amount}</td>
+      </tr>`;
+  }
+}
+</script>
+
+</body>
+</html>
