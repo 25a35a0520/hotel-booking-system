@@ -1,24 +1,35 @@
+/* Page background color */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #dbeafe; /* light blue background */
+  background-color: #e0f2fe; /* light blue */
 }
 
+/* Main box */
 .container {
   background-color: #ffffff;
   width: 80%;
   margin: 30px auto;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
+/* Headings */
+h2, h3 {
+  text-align: center;
+  color: #1e3a8a;
+}
+
+/* Labels */
 label {
   display: block;
   margin-top: 10px;
   font-weight: bold;
+  color: #1f2937;
 }
 
+/* Inputs and button */
 input, button {
   width: 100%;
   padding: 8px;
@@ -26,8 +37,9 @@ input, button {
   box-sizing: border-box;
 }
 
+/* Button style */
 button {
-  background-color: #2563eb; /* blue button */
+  background-color: #2563eb;
   color: white;
   border: none;
   cursor: pointer;
@@ -38,12 +50,14 @@ button:hover {
   background-color: #1e40af;
 }
 
+/* Message */
 #msg {
   color: red;
   font-weight: bold;
   margin-top: 10px;
 }
 
+/* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -57,5 +71,5 @@ th, td {
 }
 
 th {
-  background-color: #e5e7eb;
+  background-color: #bfdbfe;
 }
