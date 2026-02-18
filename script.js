@@ -1,51 +1,75 @@
-let bookings = [];   // all bookings store avuthayi
+<script>
+const MAX_ROOMS = 30;
+const PRICE = 2000;
 
-document.getElementById("bookingForm").onsubmit = function () {
+let totalBookedRooms = 0;
 
-    let name = document.getElementById("name").value;
-    let room = document.getElementById("room").value;
-    let checkin = document.getElementById("checkin").value;
-    let checkout = document.getElementById("checkout").value;
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
+const rooms = document.getElementById("rooms");
+const amount = document.getElementById("amount");
+const bookedCount = document.getElementById("bookedCount");
+const msg = document.getElementById("msg");
 
-    // booking object create
-    let booking = {
-        name: name,
-        room: room,
-        checkin: checkin,
-        checkout: checkout
-    };
+/* ---- PAST DATE NOT ALLOWED ---- */
+checkin.addEventListener("change", function () {
+  let today = new Date();
+  today.setHours(0,0,0,0);
+  let selected = new Date(this.value);
 
-    // add booking to array
-    bookings.push(booking);
+  if (selected < today) {
+    alert("Past date not allowed");
+    this.value = "";
+  }
+});
 
-    // success message
-    document.getElementById("result").innerText =
-        "Booking successful for " + name;
+/* ---- AMOUNT CALCULATION ---- */
+rooms.addEventListener("input", calculateAmount);
+checkout.addEventListener("change", calculateAmount);
 
-    // show booking list
-    showBookings();
+function calculateAmount() {
+  if (!checkin.value || !checkout.value || !rooms.value) {
+    amount.value = "";
+    return;
+  }
 
-    // clear form
-    document.getElementById("bookingForm").reset();
+  let inDate = new Date(checkin.value);
+  let outDate = new Date(checkout.value);
+  let days = (outDate - inDate) / (1000 * 60 * 60 * 24);
 
-    return false; // page reload avvakunda
-};
+  if (days <= 0) {
+    alert("Check-out must be after check-in");
+    checkout.value = "";
+    amount.value = "";
+    return;
+  }
 
-function showBookings() {
-
-    let list = document.getElementById("bookingList");
-    list.innerHTML = "";   // old list clear
-
-    for (let i = 0; i < bookings.length; i++) {
-
-        let li = document.createElement("li");
-
-        li.innerText =
-            bookings[i].name + " | " +
-            bookings[i].room + " | " +
-            bookings[i].checkin + " to " +
-            bookings[i].checkout;
-
-        list.appendChild(li);
-    }
+  amount.value = "₹ " + (days * rooms.value * PRICE);
 }
+
+/* ---- BOOK NOW BUTTON ---- */
+function bookNow() {
+  let r = Number(rooms.value);
+
+  if (!checkin.value || !checkout.value || !r) {
+    alert("Please fill all details");
+    return;
+  }
+
+  if (totalBookedRooms + r > MAX_ROOMS) {
+    msg.innerText = "Rooms Filled!";
+    return;
+  }
+
+  totalBookedRooms += r;
+  bookedCount.innerText = totalBookedRooms;
+
+  msg.innerText = "Booking Successful!";
+  rooms.value = "";
+  amount.value = "";
+
+  if (totalBookedRooms === MAX_ROOMS) {
+    msg.innerText = "Rooms Filled!";
+  }
+}
+</script>
