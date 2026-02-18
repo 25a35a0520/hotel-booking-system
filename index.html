@@ -5,12 +5,12 @@
   <style>
     body { font-family: Arial; }
     label { display: block; margin-top: 10px; }
-    #roomMsg { color: red; }
+    #msg { color: red; }
   </style>
 </head>
 <body>
 
-<h2>Hotel Booking Form</h2>
+<h2>Hotel Booking</h2>
 
 <label>Check-in Date:</label>
 <input type="date" id="checkin">
@@ -20,60 +20,69 @@
 
 <label>No of Rooms:</label>
 <input type="number" id="rooms" min="1">
-<p id="roomMsg"></p>
+<p id="msg"></p>
 
 <label>Total Amount:</label>
 <input type="text" id="amount" readonly>
 
 <script>
-/* ---------- DATE VALIDATION ---------- */
-document.getElementById("checkin").addEventListener("change", function () {
-  let selectedDate = new Date(this.value);
+let MAX_ROOMS = 30;
+let PRICE_PER_ROOM = 2000;
+
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
+const rooms = document.getElementById("rooms");
+const msg = document.getElementById("msg");
+const amount = document.getElementById("amount");
+
+/* ---- PAST DATE NOT ALLOWED ---- */
+checkin.addEventListener("change", function () {
+  if (!this.value) return;
+
   let today = new Date();
   today.setHours(0,0,0,0);
+  let selected = new Date(this.value);
 
-  if (selectedDate < today) {
-    alert("Invalid date! Past date not allowed");
+  if (selected < today) {
+    alert("Past date not allowed");
     this.value = "";
   }
 });
 
-/* ---------- ROOMS LIMIT ---------- */
-document.getElementById("rooms").addEventListener("input", function () {
-  if (this.value > 25) {
-    document.getElementById("roomMsg").innerText =
-      "Rooms Full! Maximum 25 rooms only";
-    this.value = 25;
+/* ---- ROOMS LIMIT = 30 ---- */
+rooms.addEventListener("input", function () {
+  if (this.value > MAX_ROOMS) {
+    msg.innerText = "Rooms Filled! Only 30 bookings allowed";
+    this.value = MAX_ROOMS;
+  } else if (this.value == MAX_ROOMS) {
+    msg.innerText = "Rooms Filled!";
   } else {
-    document.getElementById("roomMsg").innerText = "";
+    msg.innerText = "";
   }
   calculateAmount();
 });
 
-/* ---------- PRICE CALCULATOR ---------- */
-document.getElementById("checkout").addEventListener("change", calculateAmount);
+/* ---- COST CALCULATION ---- */
+checkout.addEventListener("change", calculateAmount);
 
 function calculateAmount() {
-  let checkin = new Date(document.getElementById("checkin").value);
-  let checkout = new Date(document.getElementById("checkout").value);
-  let rooms = document.getElementById("rooms").value;
-
-  if (!document.getElementById("checkin").value ||
-      !document.getElementById("checkout").value ||
-      !rooms) return;
-
-  let days = (checkout - checkin) / (1000 * 60 * 60 * 24);
-
-  if (days <= 0) {
-    alert("Check-out date must be after check-in date");
-    document.getElementById("checkout").value = "";
+  if (!checkin.value || !checkout.value || !rooms.value) {
+    amount.value = "";
     return;
   }
 
-  let pricePerRoom = 2000; // change amount here
-  let total = days * rooms * pricePerRoom;
+  let inDate = new Date(checkin.value);
+  let outDate = new Date(checkout.value);
+  let days = (outDate - inDate) / (1000 * 60 * 60 * 24);
 
-  document.getElementById("amount").value = "₹ " + total;
+  if (days <= 0) {
+    alert("Check-out must be after check-in");
+    checkout.value = "";
+    amount.value = "";
+    return;
+  }
+
+  amount.value = "₹ " + (days * rooms.value * PRICE_PER_ROOM);
 }
 </script>
 
