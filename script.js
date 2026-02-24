@@ -4,34 +4,33 @@ const totalRoomsEl = document.getElementById("totalRooms");
 const totalAmountEl = document.getElementById("totalAmount");
 const dateInput = document.getElementById("date");
 
+let totalRooms = 0;
+let totalAmount = 0;
+
+// Room prices
 const roomPrices = {
     Single: 2000,
     Double: 3500,
     Deluxe: 5000
 };
 
-// Store bookings date-wise
-let bookings = {};
-
+// Today date (block past)
 const today = new Date();
-today.setHours(0,0,0,0);
+today.setHours(0, 0, 0, 0);
 
-// Block past dates
 const todayStr = today.toISOString().split("T")[0];
 dateInput.min = todayStr;
 dateInput.value = todayStr;
 
-form.addEventListener("submit", function(e) {
+form.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const name = document.getElementById("name").value;
     const roomType = document.getElementById("roomType").value;
-    const selectedDateStr = dateInput.value;
+    const selectedDate = new Date(dateInput.value);
+    selectedDate.setHours(0, 0, 0, 0);
 
-    const selectedDate = new Date(selectedDateStr);
-    selectedDate.setHours(0,0,0,0);
-
-    // ❌ Past date not allowed
+    // ❌ Past date block
     if (selectedDate < today) {
         alert("Past date booking is NOT allowed!");
         return;
@@ -39,34 +38,16 @@ form.addEventListener("submit", function(e) {
 
     const price = roomPrices[roomType];
 
-    if (!bookings[selectedDateStr]) {
-        bookings[selectedDateStr] = {
-            rooms: 0,
-            amount: 0,
-            list: []
-        };
-    }
+    totalRooms += 1;
+    totalAmount += price;
 
-    bookings[selectedDateStr].rooms += 1;
-    bookings[selectedDateStr].amount += price;
-    bookings[selectedDateStr].list.push(
-        `${name} booked ${roomType} Room – ₹${price}`
-    );
+    totalRoomsEl.textContent = totalRooms;
+    totalAmountEl.textContent = totalAmount;
 
-    displaySummary(selectedDateStr);
+    const li = document.createElement("li");
+    li.textContent = `${name} booked ${roomType} Room – ₹${price}`;
+    bookingList.appendChild(li);
+
     form.reset();
-    dateInput.value = selectedDateStr;
+    dateInput.value = todayStr;
 });
-
-function displaySummary(date) {
-    bookingList.innerHTML = "";
-
-    totalRoomsEl.textContent = bookings[date].rooms;
-    totalAmountEl.textContent = bookings[date].amount;
-
-    bookings[date].list.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        bookingList.appendChild(li);
-    });
-}
