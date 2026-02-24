@@ -1,20 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("bookingForm");
-    const bookingList = document.getElementById("bookingList");
+    const nameInput = document.getElementById("name");
+    const dateInput = document.getElementById("date");
+    const roomTypeInput = document.getElementById("roomType");
+
     const totalRoomsEl = document.getElementById("totalRooms");
     const totalAmountEl = document.getElementById("totalAmount");
-    const dateInput = document.getElementById("date");
+    const bookingList = document.getElementById("bookingList");
 
     let totalRooms = 0;
     let totalAmount = 0;
 
-    const roomPrices = {
+    const prices = {
         Single: 2000,
         Double: 3500,
         Deluxe: 5000
     };
 
+    // Set today as minimum date
     const today = new Date().toISOString().split("T")[0];
     dateInput.min = today;
     dateInput.value = today;
@@ -22,26 +26,28 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const name = document.getElementById("name").value;
-        const roomType = document.getElementById("roomType").value;
-        const selectedDate = dateInput.value;
+        const name = nameInput.value.trim();
+        const date = dateInput.value;
+        const roomType = roomTypeInput.value;
 
-        if (selectedDate < today) {
-            alert("Past date booking not allowed!");
+        if (name === "" || roomType === "") {
+            alert("Please fill all fields");
             return;
         }
 
-        const price = roomPrices[roomType];
+        const price = prices[roomType];
 
-        totalRooms++;
+        totalRooms += 1;
         totalAmount += price;
 
         totalRoomsEl.textContent = totalRooms;
         totalAmountEl.textContent = totalAmount;
 
         const li = document.createElement("li");
-        li.textContent = name + " booked " + roomType + " Room - ₹" + price;
+        li.textContent = name + " booked " + roomType + " Room – ₹" + price;
         bookingList.appendChild(li);
+
+        alert("Booking Successful ✅");
 
         form.reset();
         dateInput.value = today;
