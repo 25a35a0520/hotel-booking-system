@@ -1,51 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>The Grand Velis</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HERO SECTION -->
+<!-- 1️⃣ HERO -->
 <section class="hero">
     <div class="hero-text">
         <h1>WELCOME TO THE GRAND VELIS</h1>
         <p>Where Luxury Meets Comfort</p>
-        <button onclick="goToDetails()">Book Room</button>
+
+        <!-- ONLY THIS BUTTON -->
+        <button onclick="showHotelDetails()">Book Room</button>
     </div>
 </section>
 
-<!-- ROOM DETAILS SECTION -->
-<section id="roomDetails" class="room-details">
-    <h2>See Room Details</h2>
+<!-- 2️⃣ SEE HOTEL DETAILS (6 IMAGES) -->
+<section id="hotelDetails" class="hotel-details">
+    <h2>See Hotel Details</h2>
 
-    <!-- SINGLE ROOM -->
-    <div class="room-row">
-        <h3>Single Room</h3>
-        <div class="room-images">
-            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
-            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa">
-        </div>
+    <div class="image-grid">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945">
+        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb">
+        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
+        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d">
+        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa">
+        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b">
     </div>
 
-    <!-- DOUBLE ROOM -->
-    <div class="room-row">
-        <h3>Double Room</h3>
-        <div class="room-images">
-            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb">
-            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b">
-        </div>
-    </div>
+    <!-- ONLY THIS SHOULD SCROLL -->
+    <button class="book-now" onclick="scrollToBooking()">Book Now</button>
+</section>
 
-    <!-- DELUXE ROOM -->
-    <div class="room-row">
-        <h3>Deluxe Room</h3>
-        <div class="room-images">
-            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d">
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2">
-        </div>
-    </div>
+<!-- 3️⃣ BOOKING DETAILS -->
+<section id="bookingDetails" class="booking-details">
+    <h2>Booking Details</h2>
+
+    <input type="text" placeholder="Name">
+    <select>
+        <option>Single Room</option>
+        <option>Double Room</option>
+        <option>Deluxe Room</option>
+    </select>
+    <input type="date">
+
+    <button>Confirm Booking</button>
 </section>
 
 <script src="script.js"></script>
