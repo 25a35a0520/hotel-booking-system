@@ -1,58 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hotel Booking System</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+const form = document.getElementById("bookingForm");
+const bookingList = document.getElementById("bookingList");
+const totalRoomsEl = document.getElementById("totalRooms");
+const totalAmountEl = document.getElementById("totalAmount");
 
-  <!-- HERO SECTION -->
-  <div class="hero">
-    <div class="overlay">
-      <h1>Hotel Booking System</h1>
-      <p>Book your stay easily</p>
-    </div>
-  </div>
+let totalRooms = 0;
+let totalAmount = 0;
 
-  <!-- BOOKING FORM -->
-  <div class="form-box">
-    <h2>Booking Details</h2>
+// Today date
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("date").setAttribute("min", today);
+document.getElementById("date").value = today;
 
-    <label>Name:</label>
-    <input type="text" id="name" required>
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-    <label>Rooms:</label>
-    <input type="number" id="rooms" min="1" required>
+    const name = document.getElementById("name").value;
+    const date = document.getElementById("date").value;
+    const rooms = Number(document.getElementById("rooms").value);
+    const price = Number(document.getElementById("price").value);
 
-    <label>Check-in Date:</label>
-    <input type="date" id="checkin" required>
+    // Past / other date not allowed
+    if (date !== today) {
+        alert("Only today's booking allowed!");
+        return;
+    }
 
-    <button onclick="addBooking()">Book Now</button>
-  </div>
+    const amount = rooms * price;
 
-  <!-- TODAY SUMMARY -->
-  <div class="summary">
-    <h2>Today's Summary</h2>
-    <p>Total Rooms Booked Today: <span id="todayRooms">0</span></p>
-    <p>Total Amount Today: ₹ <span id="todayAmount">0</span></p>
-  </div>
+    totalRooms += rooms;
+    totalAmount += amount;
 
-  <!-- TODAY BOOKINGS LIST -->
-  <h2 class="center">Today's Bookings</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Date</th>
-        <th>Rooms</th>
-        <th>Amount (₹)</th>
-      </tr>
-    </thead>
-    <tbody id="bookingList"></tbody>
-  </table>
+    totalRoomsEl.textContent = totalRooms;
+    totalAmountEl.textContent = totalAmount;
 
-  <script src="script.js"></script>
-</body>
-</html>
+    const li = document.createElement("li");
+    li.textContent = `${name} booked ${rooms} room(s) - ₹${amount}`;
+    bookingList.appendChild(li);
 
+    form.reset();
+    document.getElementById("date").value = today;
+});
