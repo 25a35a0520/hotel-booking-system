@@ -2,63 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>The Grand Velis - Hotel Booking System</title>
-
-    <!-- CSS LINK (VERY IMPORTANT) -->
+    <title>The Grand Velis</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HERO SECTION -->
 <header class="hero">
-    <nav>
+    <nav class="navbar">
         <h2>The Grand Velis</h2>
-        
     </nav>
 
-    <div class="hero-text">
+    <!-- HERO CENTER CONTENT -->
+    <div class="hero-text" id="heroText">
         <h1>WELCOME TO THE GRAND VELIS</h1>
         <p>Where Luxury Meets Comfort</p>
+
+        <!-- BOOK ROOM BUTTON (CENTER) -->
+        <button class="hero-book-btn" onclick="openBooking()">Book Room</button>
     </div>
 </header>
 
-<!-- BOOKING SECTION -->
-<section class="booking">
-    <h2>Hotel Booking</h2>
+<!-- BOOKING POPUP -->
+<div class="booking-modal" id="bookingModal">
+    <div class="booking-box">
+        <h2>Hotel Booking</h2>
 
-    <form id="bookingForm">
-    <input type="text" id="name" placeholder="Customer Name" required>
+        <input type="text" id="name" placeholder="Customer Name">
+        <input type="date" id="date">
 
-    <input type="date" id="date" required>
+        <select id="roomType">
+            <option value="">Select Room Type</option>
+            <option value="Single">Single Room</option>
+            <option value="Double">Double Room</option>
+            <option value="Deluxe">Deluxe Room</option>
+        </select>
 
-    <select id="roomType" required>
-        <option value="">Select Room Type</option>
-        <option value="Single">Single Room</option>
-        <option value="Double">Double Room</option>
-        <option value="Deluxe">Deluxe Room</option>
-    </select>
+        <button onclick="bookNow()">Confirm Booking</button>
+        <button class="close-btn" onclick="closeBooking()">Close</button>
+    </div>
+</div>
 
-    <button type="submit">Book Now</button>
-</form>
-</section>
-
-<!-- SUMMARY SECTION -->
 <section class="summary">
     <h2>Summary</h2>
     <p>Total Rooms Booked: <span id="totalRooms">0</span></p>
     <p>Total Amount: ₹<span id="totalAmount">0</span></p>
 </section>
 
-<!-- BOOKINGS LIST -->
-<section class="list">
-    <h2>Bookings</h2>
-    <ul id="bookingList"></ul>
-</section>
-
-<!-- JS FILE -->
 <script src="script.js"></script>
-
 </body>
 </html>
-
-
