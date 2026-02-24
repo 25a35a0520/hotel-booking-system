@@ -1,60 +1,72 @@
-let bookings = [];
-const ROOM_PRICE = 2000;
+const form = document.getElementById("bookingForm");
+const bookingList = document.getElementById("bookingList");
+const totalRoomsEl = document.getElementById("totalRooms");
+const totalAmountEl = document.getElementById("totalAmount");
+const dateInput = document.getElementById("date");
 
-// block past dates
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("checkin").setAttribute("min", today);
+const roomPrices = {
+    Single: 2000,
+    Double: 3500,
+    Deluxe: 5000
+};
 
-function addBooking() {
-  const name = document.getElementById("name").value;
-  const rooms = parseInt(document.getElementById("rooms").value);
-  const date = document.getElementById("checkin").value;
+// Store bookings date-wise
+let bookings = {};
 
-  if (name === "" || rooms <= 0 || date === "") {
-    alert("Please fill all details");
-    return;
-  }
+const today = new Date();
+today.setHours(0,0,0,0);
 
-  if (date < today) {
-    alert("Past date not allowed");
-    return;
-  }
+// Block past dates
+const todayStr = today.toISOString().split("T")[0];
+dateInput.min = todayStr;
+dateInput.value = todayStr;
 
-  bookings.push({ name, rooms, date });
-  showTodayBookings();
-  clearForm();
-}
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-function showTodayBookings() {
-  const tbody = document.getElementById("bookingList");
-  tbody.innerHTML = "";
+    const name = document.getElementById("name").value;
+    const roomType = document.getElementById("roomType").value;
+    const selectedDateStr = dateInput.value;
 
-  let totalRooms = 0;
-  let totalAmount = 0;
+    const selectedDate = new Date(selectedDateStr);
+    selectedDate.setHours(0,0,0,0);
 
-  bookings.forEach(b => {
-    if (b.date === today) {
-      const amount = b.rooms * ROOM_PRICE;
-      totalRooms += b.rooms;
-      totalAmount += amount;
-
-      tbody.innerHTML += `
-        <tr>
-          <td>${b.name}</td>
-          <td>${b.date}</td>
-          <td>${b.rooms}</td>
-          <td>${amount}</td>
-        </tr>
-      `;
+    // ❌ Past date not allowed
+    if (selectedDate < today) {
+        alert("Past date booking is NOT allowed!");
+        return;
     }
-  });
 
-  document.getElementById("todayRooms").innerText = totalRooms;
-  document.getElementById("todayAmount").innerText = totalAmount;
-}
+    const price = roomPrices[roomType];
 
-function clearForm() {
-  document.getElementById("name").value = "";
-  document.getElementById("rooms").value = "";
-  document.getElementById("checkin").value = "";
+    if (!bookings[selectedDateStr]) {
+        bookings[selectedDateStr] = {
+            rooms: 0,
+            amount: 0,
+            list: []
+        };
+    }
+
+    bookings[selectedDateStr].rooms += 1;
+    bookings[selectedDateStr].amount += price;
+    bookings[selectedDateStr].list.push(
+        `${name} booked ${roomType} Room – ₹${price}`
+    );
+
+    displaySummary(selectedDateStr);
+    form.reset();
+    dateInput.value = selectedDateStr;
+});
+
+function displaySummary(date) {
+    bookingList.innerHTML = "";
+
+    totalRoomsEl.textContent = bookings[date].rooms;
+    totalAmountEl.textContent = bookings[date].amount;
+
+    bookings[date].list.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        bookingList.appendChild(li);
+    });
 }
