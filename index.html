@@ -2,38 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>The Grand Velis</title>
+    <title>The Grand Velis - Hotel Booking System</title>
+
+    <!-- CSS LINK (VERY IMPORTANT) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>WELCOME TO THE GRAND VELIS</h1>
-<p>Where Luxury Meets Comfort</p>
+<!-- HERO SECTION -->
+<header class="hero">
+    <nav>
+        <h2>The Grand Velis</h2>
+        <ul>
+            <li>Home</li>
+            <li>Rooms</li>
+            <li>Facilities</li>
+            <li>Contact</li>
+        </ul>
+    </nav>
 
-<h2>Hotel Booking</h2>
+    <div class="hero-text">
+        <h1>WELCOME TO THE GRAND VELIS</h1>
+        <p>Where Luxury Meets Comfort</p>
+    </div>
+</header>
 
-<form id="bookingForm">
-    <input type="text" id="name" placeholder="Customer Name" required><br><br>
+<!-- BOOKING SECTION -->
+<section class="booking">
+    <h2>Hotel Booking</h2>
 
-    <input type="date" id="date" required><br><br>
+    <form id="bookingForm">
+        <input type="text" id="name" placeholder="Customer Name" required>
 
-    <select id="roomType" required>
-        <option value="">Select Room Type</option>
-        <option value="Single">Single Room</option>
-        <option value="Double">Double Room</option>
-        <option value="Deluxe">Deluxe Room</option>
-    </select><br><br>
+        <input type="date" id="date" required>
 
-    <button type="submit">Book Now</button>
-</form>
+        <select id="roomType" required>
+            <option value="">Select Room Type</option>
+            <option value="Single">Single Room</option>
+            <option value="Double">Double Room</option>
+            <option value="Deluxe">Deluxe Room</option>
+        </select>
 
-<h2>Summary</h2>
-<p>Total Rooms Booked: <span id="totalRooms">0</span></p>
-<p>Total Amount: ₹<span id="totalAmount">0</span></p>
+        <button type="submit">Book Now</button>
+    </form>
+</section>
 
-<h2>Bookings</h2>
-<ul id="bookingList"></ul>
+<!-- SUMMARY SECTION -->
+<section class="summary">
+    <h2>Summary</h2>
+    <p>Total Rooms Booked: <span id="totalRooms">0</span></p>
+    <p>Total Amount: ₹<span id="totalAmount">0</span></p>
+</section>
 
+<!-- BOOKINGS LIST -->
+<section class="list">
+    <h2>Bookings</h2>
+    <ul id="bookingList"></ul>
+</section>
+
+<!-- JS FILE -->
 <script src="script.js"></script>
+
 </body>
 </html>
