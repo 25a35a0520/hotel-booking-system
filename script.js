@@ -1,106 +1,90 @@
-// ===== CONFIG =====
-const PRICE_PER_ROOM = 2000;
-const MAX_ROOMS_PER_DAY = 30;
-
-// ===== GET ELEMENTS =====
-const nameInput = document.getElementById("name");
-const checkin = document.getElementById("checkin");
-const checkout = document.getElementById("checkout");
-const roomsInput = document.getElementById("rooms");
-const amountInput = document.getElementById("amount");
-const bookBtn = document.getElementById("bookBtn");
-const msg = document.getElementById("msg");
-const detailsTable = document.getElementById("details");
-const summaryTable = document.getElementById("summary");
-
-// ===== LOAD EXISTING BOOKINGS =====
-let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-
-// ===== PAST DATE NOT ALLOWED =====
-checkin.addEventListener("change", () => {
-  if (!checkin.value) return;
-
-  let today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let selected = new Date(checkin.value);
-
-  if (selected < today) {
-    alert("Past date not allowed");
-    checkin.value = "";
-  }
-});
-
-// ===== AUTO AMOUNT CALCULATOR =====
-roomsInput.addEventListener("input", calculateAmount);
-checkout.addEventListener("change", calculateAmount);
-
-function calculateAmount() {
-  if (!checkin.value || !checkout.value || !roomsInput.value) {
-    amountInput.value = "";
-    return;
-  }
-
-  let inDate = new Date(checkin.value);
-  let outDate = new Date(checkout.value);
-
-  let days = (outDate - inDate) / (1000 * 60 * 60 * 24);
-
-  if (days <= 0) {
-    alert("Check-out must be after check-in");
-    checkout.value = "";
-    amountInput.value = "";
-    return;
-  }
-
-  let total = days * roomsInput.value * PRICE_PER_ROOM;
-  amountInput.value = "₹ " + total;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
 }
 
-// ===== BOOK NOW =====
-bookBtn.addEventListener("click", () => {
-  if (
-    !nameInput.value ||
-    !checkin.value ||
-    !checkout.value ||
-    !roomsInput.value ||
-    !amountInput.value
-  ) {
-    alert("Please fill all details");
-    return;
-  }
+/* HERO IMAGE */
+.hero {
+  background-image: url("https://images.unsplash.com/photo-1566073771259-6a8506099945");
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
 
-  let bookedToday = bookings
-    .filter(b => b.date === checkin.value)
-    .reduce((sum, b) => sum + b.rooms, 0);
+.overlay {
+  background: rgba(0,0,0,0.6);
+  height: 100%;
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+}
 
-  let requestedRooms = Number(roomsInput.value);
+.overlay h1 {
+  font-size: 40px;
+}
 
-  if (bookedToday + requestedRooms > MAX_ROOMS_PER_DAY) {
-    msg.innerText = "Rooms Filled for this date!";
-    return;
-  }
+.overlay p {
+  font-size: 18px;
+}
 
-  bookings.push({
-    name: nameInput.value,
-    date: checkin.value,
-    rooms: requestedRooms,
-    amount: Number(amountInput.value.replace("₹", "").trim())
-  });
+/* FORM */
+.form-box {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  border-radius: 6px;
+}
 
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-  msg.innerText = "Booking Successful!";
+.form-box label {
+  display: block;
+  margin-top: 10px;
+}
 
-  renderTables();
-  clearForm();
-});
+.form-box input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+}
 
-// ===== RENDER TABLES =====
-function renderTables() {
-  detailsTable.innerHTML = "";
-  summaryTable.innerHTML = "";
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 8px;
+  background: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-  let dailySummary = {};
+/* SUMMARY */
+.summary {
+  background: white;
+  width: 300px;
+  margin: 20px auto;
+  padding: 15px;
+  border-radius: 6px;
+}
 
-  bookings.forEach(b => {
-    //
+/* TABLE */
+.center {
+  text-align: center;
+}
+
+table {
+  width: 90%;
+  margin: auto;
+  background: white;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid #999;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
