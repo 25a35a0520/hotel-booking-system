@@ -1,56 +1,48 @@
-document.addEventListener("DOMContentLoaded", function () {
+let totalRooms = 0;
+let totalAmount = 0;
 
-    const form = document.getElementById("bookingForm");
-    const nameInput = document.getElementById("name");
-    const dateInput = document.getElementById("date");
-    const roomTypeInput = document.getElementById("roomType");
+const prices = {
+    Single: 2000,
+    Double: 3500,
+    Deluxe: 5000
+};
 
-    const totalRoomsEl = document.getElementById("totalRooms");
-    const totalAmountEl = document.getElementById("totalAmount");
-    const bookingList = document.getElementById("bookingList");
-
-    let totalRooms = 0;
-    let totalAmount = 0;
-
-    const prices = {
-        Single: 2000,
-        Double: 3500,
-        Deluxe: 5000
-    };
-
-    // Set today as minimum date
+function openBooking() {
+    document.getElementById("bookingModal").style.display = "flex";
     const today = new Date().toISOString().split("T")[0];
-    dateInput.min = today;
-    dateInput.value = today;
+    document.getElementById("date").min = today;
+    document.getElementById("date").value = today;
+}
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
+function closeBooking() {
+    document.getElementById("bookingModal").style.display = "none";
+}
 
-        const name = nameInput.value.trim();
-        const date = dateInput.value;
-        const roomType = roomTypeInput.value;
+function bookNow() {
+    const name = document.getElementById("name").value;
+    const roomType = document.getElementById("roomType").value;
 
-        if (name === "" || roomType === "") {
-            alert("Please fill all fields");
-            return;
-        }
+    if (name === "" || roomType === "") {
+        alert("Please fill all details");
+        return;
+    }
 
-        const price = prices[roomType];
+    totalRooms++;
+    totalAmount += prices[roomType];
 
-        totalRooms += 1;
-        totalAmount += price;
+    document.getElementById("totalRooms").textContent = totalRooms;
+    document.getElementById("totalAmount").textContent = totalAmount;
 
-        totalRoomsEl.textContent = totalRooms;
-        totalAmountEl.textContent = totalAmount;
+    alert("Booking Successful ✅");
+    closeBooking();
+}
 
-        const li = document.createElement("li");
-        li.textContent = name + " booked " + roomType + " Room – ₹" + price;
-        bookingList.appendChild(li);
-
-        alert("Booking Successful ✅");
-
-        form.reset();
-        dateInput.value = today;
-    });
-
+/* SCROLL EFFECT */
+window.addEventListener("scroll", () => {
+    const heroText = document.getElementById("heroText");
+    if (window.scrollY > 100) {
+        heroText.classList.add("sticky");
+    } else {
+        heroText.classList.remove("sticky");
+    }
 });
