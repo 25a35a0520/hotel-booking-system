@@ -1,42 +1,39 @@
-const form = document.getElementById("bookingForm");
-const bookingList = document.getElementById("bookingList");
-const totalRoomsEl = document.getElementById("totalRooms");
-const totalAmountEl = document.getElementById("totalAmount");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Grand Velis</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-let totalRooms = 0;
-let totalAmount = 0;
+<h1>WELCOME TO THE GRAND VELIS</h1>
+<p>Where Luxury Meets Comfort</p>
 
-// Today date
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("date").setAttribute("min", today);
-document.getElementById("date").value = today;
+<h2>Hotel Booking</h2>
 
-form.addEventListener("submit", function(e) {
-    e.preventDefault();
+<form id="bookingForm">
+    <input type="text" id="name" placeholder="Customer Name" required><br><br>
 
-    const name = document.getElementById("name").value;
-    const date = document.getElementById("date").value;
-    const rooms = Number(document.getElementById("rooms").value);
-    const price = Number(document.getElementById("price").value);
+    <input type="date" id="date" required><br><br>
 
-    // Past / other date not allowed
-    if (date !== today) {
-        alert("Only today's booking allowed!");
-        return;
-    }
+    <select id="roomType" required>
+        <option value="">Select Room Type</option>
+        <option value="Single">Single Room</option>
+        <option value="Double">Double Room</option>
+        <option value="Deluxe">Deluxe Room</option>
+    </select><br><br>
 
-    const amount = rooms * price;
+    <button type="submit">Book Now</button>
+</form>
 
-    totalRooms += rooms;
-    totalAmount += amount;
+<h2>Summary</h2>
+<p>Total Rooms Booked: <span id="totalRooms">0</span></p>
+<p>Total Amount: ₹<span id="totalAmount">0</span></p>
 
-    totalRoomsEl.textContent = totalRooms;
-    totalAmountEl.textContent = totalAmount;
+<h2>Bookings</h2>
+<ul id="bookingList"></ul>
 
-    const li = document.createElement("li");
-    li.textContent = `${name} booked ${rooms} room(s) - ₹${amount}`;
-    bookingList.appendChild(li);
-
-    form.reset();
-    document.getElementById("date").value = today;
-});
+<script src="script.js"></script>
+</body>
+</html>
