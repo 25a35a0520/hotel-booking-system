@@ -1,75 +1,60 @@
-/* Page background color */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #e0f2fe; /* light blue */
+let bookings = [];
+const ROOM_PRICE = 2000;
+
+// block past dates
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("checkin").setAttribute("min", today);
+
+function addBooking() {
+  const name = document.getElementById("name").value;
+  const rooms = parseInt(document.getElementById("rooms").value);
+  const date = document.getElementById("checkin").value;
+
+  if (name === "" || rooms <= 0 || date === "") {
+    alert("Please fill all details");
+    return;
+  }
+
+  if (date < today) {
+    alert("Past date not allowed");
+    return;
+  }
+
+  bookings.push({ name, rooms, date });
+  showTodayBookings();
+  clearForm();
 }
 
-/* Main box */
-.container {
-  background-color: #ffffff;
-  width: 80%;
-  margin: 30px auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+function showTodayBookings() {
+  const tbody = document.getElementById("bookingList");
+  tbody.innerHTML = "";
+
+  let totalRooms = 0;
+  let totalAmount = 0;
+
+  bookings.forEach(b => {
+    if (b.date === today) {
+      const amount = b.rooms * ROOM_PRICE;
+      totalRooms += b.rooms;
+      totalAmount += amount;
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${b.name}</td>
+          <td>${b.date}</td>
+          <td>${b.rooms}</td>
+          <td>${amount}</td>
+        </tr>
+      `;
+    }
+  });
+
+  document.getElementById("todayRooms").innerText = totalRooms;
+  document.getElementById("todayAmount").innerText = totalAmount;
 }
 
-/* Headings */
-h2, h3 {
-  text-align: center;
-  color: #1e3a8a;
-}
-
-/* Labels */
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-/* Inputs and button */
-input, button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  box-sizing: border-box;
-}
-
-/* Button style */
-button {
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-button:hover {
-  background-color: #1e40af;
-}
-
-/* Message */
-#msg {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  border: 1px solid #000;
-  padding: 6px;
-  text-align: center;
-}
-
-th {
-  background-color: #bfdbfe;
+function clearForm() {
+  document.getElementById("name").value = "";
+  document.getElementById("rooms").value = "";
+  document.getElementById("checkin").value = "";
 }
