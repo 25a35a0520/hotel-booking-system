@@ -1,90 +1,69 @@
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: white;
 }
 
-/* HERO IMAGE */
 .hero {
-  background-image: url("https://images.unsplash.com/photo-1566073771259-6a8506099945");
-  height: 300px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
+    background: url("hotel.jpg") center/cover no-repeat;
+    height: 90vh;
 }
 
-.overlay {
-  background: rgba(0,0,0,0.6);
-  height: 100%;
-  color: white;
-  text-align: center;
-  padding-top: 100px;
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0,0,0,0.6);
 }
 
-.overlay h1 {
-  font-size: 40px;
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
 }
 
-.overlay p {
-  font-size: 18px;
+.hero-text {
+    text-align: center;
+    margin-top: 200px;
 }
 
-/* FORM */
-.form-box {
-  background: white;
-  padding: 20px;
-  width: 300px;
-  margin: 20px auto;
-  border-radius: 6px;
+.hero-text h1 {
+    font-size: 42px;
 }
 
-.form-box label {
-  display: block;
-  margin-top: 10px;
+.booking, .summary, .list {
+    max-width: 600px;
+    margin: auto;
+    padding: 30px;
 }
 
-.form-box input {
-  width: 100%;
-  padding: 6px;
-  margin-top: 5px;
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
 }
 
 button {
-  width: 100%;
-  margin-top: 15px;
-  padding: 8px;
-  background: green;
-  color: white;
-  border: none;
-  cursor: pointer;
+    background: gold;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-/* SUMMARY */
-.summary {
-  background: white;
-  width: 300px;
-  margin: 20px auto;
-  padding: 15px;
-  border-radius: 6px;
+.rooms {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
-/* TABLE */
-.center {
-  text-align: center;
+.room {
+    width: 30%;
+    text-align: center;
 }
 
-table {
-  width: 90%;
-  margin: auto;
-  background: white;
-  border-collapse: collapse;
-}
-
-table, th, td {
-  border: 1px solid #999;
-}
-
-th, td {
-  padding: 8px;
-  text-align: center;
+.room img {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
 }
