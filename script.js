@@ -1,69 +1,72 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: white;
-}
+const form = document.getElementById("bookingForm");
+const bookingList = document.getElementById("bookingList");
+const totalRoomsEl = document.getElementById("totalRooms");
+const totalAmountEl = document.getElementById("totalAmount");
+const dateInput = document.getElementById("date");
 
-.hero {
-    background: url("hotel.jpg") center/cover no-repeat;
-    height: 90vh;
-}
+const roomPrices = {
+    Single: 2000,
+    Double: 3500,
+    Deluxe: 5000
+};
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background: rgba(0,0,0,0.6);
-}
+// Store bookings date-wise
+let bookings = {};
 
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
+const today = new Date();
+today.setHours(0,0,0,0);
 
-.hero-text {
-    text-align: center;
-    margin-top: 200px;
-}
+// Block past dates
+const todayStr = today.toISOString().split("T")[0];
+dateInput.min = todayStr;
+dateInput.value = todayStr;
 
-.hero-text h1 {
-    font-size: 42px;
-}
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-.booking, .summary, .list {
-    max-width: 600px;
-    margin: auto;
-    padding: 30px;
-}
+    const name = document.getElementById("name").value;
+    const roomType = document.getElementById("roomType").value;
+    const selectedDateStr = dateInput.value;
 
-input, select, button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-}
+    const selectedDate = new Date(selectedDateStr);
+    selectedDate.setHours(0,0,0,0);
 
-button {
-    background: gold;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
+    // ❌ Past date not allowed
+    if (selectedDate < today) {
+        alert("Past date booking is NOT allowed!");
+        return;
+    }
 
-.rooms {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
+    const price = roomPrices[roomType];
 
-.room {
-    width: 30%;
-    text-align: center;
-}
+    if (!bookings[selectedDateStr]) {
+        bookings[selectedDateStr] = {
+            rooms: 0,
+            amount: 0,
+            list: []
+        };
+    }
 
-.room img {
-    width: 100%;
-    height: 120px;
-    border-radius: 8px;
+    bookings[selectedDateStr].rooms += 1;
+    bookings[selectedDateStr].amount += price;
+    bookings[selectedDateStr].list.push(
+        `${name} booked ${roomType} Room – ₹${price}`
+    );
+
+    displaySummary(selectedDateStr);
+    form.reset();
+    dateInput.value = selectedDateStr;
+});
+
+function displaySummary(date) {
+    bookingList.innerHTML = "";
+
+    totalRoomsEl.textContent = bookings[date].rooms;
+    totalAmountEl.textContent = bookings[date].amount;
+
+    bookings[date].list.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        bookingList.appendChild(li);
+    });
 }
