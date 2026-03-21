@@ -1,0 +1,29 @@
+body {
+  font-family: Arial;
+  text-align: center;
+}
+
+.home {
+  background-image: url("https://source.unsplash.com/1600x900/?hotel");
+  background-size: cover;
+  color: white;
+  padding-top: 200px;
+}
+
+button {
+  padding: 10px 20px;
+  background: orange;
+  border: none;
+  cursor: pointer;
+}
+
+.rooms {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.rooms img {
+  width: 200px;
+  height: 150px;
+}
