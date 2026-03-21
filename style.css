@@ -3,20 +3,25 @@ body {
   text-align: center;
 }
 
+/* Home background */
 .home {
-  background-image: url("https://source.unsplash.com/1600x900/?hotel");
+  background-image: url("https://images.unsplash.com/photo-1566073771259-6a8506099945");
   background-size: cover;
+  height: 100vh;
   color: white;
   padding-top: 200px;
 }
 
+/* Button */
 button {
   padding: 10px 20px;
   background: orange;
   border: none;
   cursor: pointer;
+  margin-top: 10px;
 }
 
+/* Rooms layout */
 .rooms {
   display: flex;
   justify-content: center;
@@ -26,4 +31,5 @@ button {
 .rooms img {
   width: 200px;
   height: 150px;
+  border-radius: 10px;
 }
